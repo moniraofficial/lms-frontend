@@ -11,7 +11,6 @@ interface Course {
   thumbnail: string;
 }
 
-// ডিজাইনের সাথে মিল রেখে ডিফল্ট ফলব্যাক ডেটা (Fallback Data)
 const fallbackCourses: Course[] = [
   {
     _id: '1',
@@ -45,7 +44,8 @@ export default function PopularCourses() {
   useEffect(() => {
     async function fetchCourses() {
       try {
-        const res = await fetch('http://localhost:5000/api/courses');
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lms-backend-tfco.vercel.app/api/courses';
+        const res = await fetch(API_URL);
         const data = await res.json();
         if (data.success && data.data && data.data.length > 0) {
           setCourses(data.data);
@@ -61,11 +61,9 @@ export default function PopularCourses() {
   return (
     <section className="py-16 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto text-center">
-        {/* টাইটেল এবং সাবটাইটেল */}
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Courses</h2>
         <p className="text-gray-600 mb-10">Discover our most popular courses</p>
 
-        {/* কোর্স কার্ডগুলোর গ্রিড */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
           {courses.map((course, index) => {
             const courseId = course._id || String(index + 1);
@@ -76,19 +74,16 @@ export default function PopularCourses() {
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col justify-between hover:shadow-md transition-shadow"
               >
                 <div>
-                  {/* থাম্বনেইল ইমেজ */}
                   <img 
                     src={course.thumbnail} 
                     alt={course.title} 
                     className="w-full h-40 object-cover rounded-xl mb-4 bg-teal-900"
                   />
-                  {/* কোর্সের নাম */}
                   <h3 className="font-semibold text-gray-900 text-lg mb-2 line-clamp-2">
                     {course.title}
                   </h3>
                 </div>
 
-                {/* প্রাইস এবং ইন্টারঅ্যাক্টিভ ভিউ ডিটেইলস বাটন */}
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
                   <span className="text-orange-500 font-bold text-xl">
                     ${course.price}
